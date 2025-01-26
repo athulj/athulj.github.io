@@ -66,7 +66,7 @@
     </div>
 
     <script>
-        // Crypto helper function
+        // Crypto helper function for password verification
         async function hash(string) {
             const utf8 = new TextEncoder().encode(string);
             const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
@@ -75,9 +75,20 @@
             return hashHex;
         }
 
+        // Hashed credentials
         const VALID_USERNAME_HASH = 'a9c43be948c5cabd56ef2bacffb77cdaa5eec49dd5eb0cc4129cf3eda5f0e74c';
         const VALID_PASSWORD_HASH = 'b7395530e4ed55cb6a5376ee8481f603d18679ce4c53b87b1146a9edc11fce1e';
-        const SECRET_CODE = 'ae11733d7ab599091b56387899307a8bcc5d486582326636ab71aa9281c530f3';
+        
+
+        // Encoded and reversed secret code
+        const ENCODED_PARTS = ['YWUxMTczM2Q3YWI1OTkwOTFiNTYzODc4OTkzMDdhOGJjYzVkNDg2NTgyMzI2NjM2YWI3MWFhOTI4MWM1MzBmMw==',
+         'reversed']; // Base64('ASD1234') reversed
+
+        function decodeSecret() {
+            const base64 = ENCODED_PARTS[0];
+            const decoded = atob(base64);
+            return decoded;
+        }
 
         document.getElementById('loginForm').addEventListener('submit', async function(event) {
             event.preventDefault();
@@ -89,7 +100,8 @@
             const passwordHash = await hash(password);
 
             if (usernameHash === VALID_USERNAME_HASH && passwordHash === VALID_PASSWORD_HASH) {
-                alert('Your secret code is: ' + SECRET_CODE);
+                const code = decodeSecret();
+                alert('Your code is: ' + code);
             } else {
                 alert('Invalid credentials');
             }
